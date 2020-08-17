@@ -17,13 +17,7 @@ var Eas = /** @class */ (function () {
                 'Authorization': "Basic " + token
             }
         });
-        this.apiJsonClient = got_1.default.extend({
-            prefixUrl: base,
-            headers: {
-                'x-otris-eas-user': 'manager',
-                'Accept': 'application/json',
-                'Authorization': "Basic " + token
-            },
+        this.apiJsonClient = this.apiClient.extend({
             responseType: 'json',
             resolveBodyOnly: true
         });
@@ -67,6 +61,35 @@ var Eas = /** @class */ (function () {
             body: form,
             headers: form.getHeaders()
         }).then(function (res) { return res.spool; });
+    };
+    Eas.prototype.createRecords = function (store, recordFile, recordIndexMode, attachmentIndexMode) {
+        if (recordIndexMode === void 0) { recordIndexMode = 0; }
+        if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
+        var form = new form_data_1.default();
+        form.append('record', recordFile);
+        form.append('recordIndexMode', recordIndexMode);
+        form.append('attachmentIndexMode', attachmentIndexMode);
+        return this.apiJsonClient.post("eas/archives/" + store.name + "/record", {
+            body: form,
+            headers: form.getHeaders()
+        }).then(function (res) { return res.records; });
+    };
+    Eas.prototype.updateRecords = function (store, recordId, recordFile, recordIndexMode, attachmentIndexMode) {
+        if (recordIndexMode === void 0) { recordIndexMode = 0; }
+        if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
+        var form = new form_data_1.default();
+        form.append('record', recordFile);
+        form.append('recordIndexMode', recordIndexMode);
+        form.append('attachmentIndexMode', attachmentIndexMode);
+        return this.apiJsonClient
+            .post("eas/archives/" + store.name + "/record/" + recordId, {
+            body: form,
+            headers: form.getHeaders()
+        }).then(function (res) { return res.records; });
+    };
+    Eas.prototype.getRecords = function (store, recordId) {
+        return this.apiJsonClient
+            .get("eas/archives/" + store.name + "/record/" + recordId);
     };
     return Eas;
 }());

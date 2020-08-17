@@ -1,8 +1,7 @@
 import got from 'got';
 import FormData from 'form-data';
 import { ReadStream } from 'fs';
-
-import { Store, Spool, StoreConfiguration } from './models/models';
+import { Store, Spool, Record, RecordFragment, StoreConfiguration } from './models/models';
 
 export class Eas {
   private apiClient: any;
@@ -20,13 +19,7 @@ export class Eas {
       }
     });
 
-    this.apiJsonClient = got.extend({
-      prefixUrl: base,
-      headers: {
-        'x-otris-eas-user': 'manager',
-        'Accept': 'application/json',
-        'Authorization': `Basic ${token}`
-      },
+    this.apiJsonClient = this.apiClient.extend({
       responseType: 'json',
       resolveBodyOnly: true
     });
@@ -83,5 +76,48 @@ export class Eas {
       body: form,
       headers: form.getHeaders()
     }).then((res: any) => res.spool);
+  }
+
+  public createRecords(
+    store: Store,
+    recordFile: ReadStream,
+    recordIndexMode: number = 0,
+    attachmentIndexMode: number = 0
+  ): Promise<RecordFragment[]> {
+    const form: FormData = new FormData();
+
+    form.append('record', recordFile);
+    form.append('recordIndexMode', recordIndexMode);
+    form.append('attachmentIndexMode', attachmentIndexMode);
+
+    return this.apiJsonClient.post(`eas/archives/${store.name}/record`, {
+      body: form,
+      headers: form.getHeaders()
+    }).then((res: any) => res.records);
+  }
+
+  public updateRecords(
+    store: Store,
+    recordId: string,
+    recordFile: ReadStream,
+    recordIndexMode: number = 0,
+    attachmentIndexMode: number = 0
+  ): Promise<RecordFragment[]> {
+    const form: FormData = new FormData();
+
+    form.append('record', recordFile);
+    form.append('recordIndexMode', recordIndexMode);
+    form.append('attachmentIndexMode', attachmentIndexMode);
+
+    return this.apiJsonClient
+      .post(`eas/archives/${store.name}/record/${recordId}`, {
+        body: form,
+        headers: form.getHeaders()
+      }).then((res: any) => res.records);
+  }
+
+  public getRecords(store: Store, recordId: string): Promise<Record[]> {
+    return this.apiJsonClient
+      .get(`eas/archives/${store.name}/record/${recordId}`);
   }
 }
