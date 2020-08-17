@@ -29,6 +29,17 @@ export interface RecordFragment {
   link: Link;
 }
 
+export interface RecordVersion {
+  owner: string;
+  hasPreviousVersion: boolean;
+  hasFollowingVersion: boolean;
+}
+
+export interface RecordVerification {
+  owner: string;
+  isValid: boolean;
+}
+
 export interface Record {
   headerFields: any;
   recordFields: any;

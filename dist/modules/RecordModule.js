@@ -47,6 +47,16 @@ var RecordModule = /** @class */ (function () {
             .get("eas/archives/" + store.name + "/record/" + recordId)
             .then(function (res) { return res; });
     };
+    RecordModule.prototype.getVersion = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/record/" + recordId + "/version")
+            .then(function (res) { return res; });
+    };
+    RecordModule.prototype.verify = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/record/" + recordId + "/verify")
+            .then(function (res) { return res; });
+    };
     return RecordModule;
 }());
 exports.RecordModule = RecordModule;

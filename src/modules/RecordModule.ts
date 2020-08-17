@@ -1,4 +1,4 @@
-import { Record, RecordFragment, Store } from '../models/models';
+import { Record, RecordFragment, RecordVersion, RecordVerification, Store } from '../models/models';
 import { ReadStream } from 'fs';
 import FormData from 'form-data';
 import { EasApi } from '../EasApi';
@@ -60,6 +60,18 @@ export class RecordModule {
   public get(store: Store, recordId: string): Promise<Record> {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/${store.name}/record/${recordId}`)
+      .then((res: any) => res);
+  }
+
+  public getVersion(store: Store, recordId: string): Promise<RecordVersion> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/record/${recordId}/version`)
+      .then((res: any) => res);
+  }
+
+  public verify(store: Store, recordId: string): Promise<RecordVerification> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/record/${recordId}/verify`)
       .then((res: any) => res);
   }
 
