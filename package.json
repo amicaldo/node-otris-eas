@@ -2,9 +2,10 @@
   "name": "node-eas",
   "version": "0.0.1",
   "description": "Abstraction for the otris EAS",
-  "main": "./src/eas.js",
+  "main": "./dist/eas.js",
   "directories": {
-    "src": "src"
+    "src": "src",
+    "dist": "dist"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
