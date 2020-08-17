@@ -1,7 +1,7 @@
 import got, { Got } from 'got';
 import { RecordModule } from './modules/RecordModule';
-import { SpoolModule } from './modules/SpoolModule';
 import { StoreModule } from './modules/StoreModule';
+import { AttachmentModule } from './modules/AttachmentModule';
 
 export class EasApi {
 
@@ -11,8 +11,8 @@ export class EasApi {
 
   // API modules
   private readonly recordModule: RecordModule;
-  private readonly spoolModule: SpoolModule;
   private readonly storeModule: StoreModule;
+  private readonly attachmentModule: AttachmentModule;
 
   constructor(base: string, username: string, password: string) {
     const token = Buffer.from(`${username}:${password}`).toString('base64');
@@ -32,8 +32,8 @@ export class EasApi {
     });
 
     this.recordModule = new RecordModule(this);
-    this.spoolModule = new SpoolModule(this);
     this.storeModule = new StoreModule(this);
+    this.attachmentModule = new AttachmentModule(this);
   }
 
   // Get API clients
@@ -50,12 +50,11 @@ export class EasApi {
     return this.recordModule;
   }
 
-  public spools(): SpoolModule {
-    return this.spoolModule;
-  }
-
   public stores(): StoreModule {
     return this.storeModule;
   }
 
+  public attachments(): AttachmentModule {
+    return this.attachmentModule;
+  }
 }

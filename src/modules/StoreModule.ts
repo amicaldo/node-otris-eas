@@ -1,4 +1,6 @@
-import { Store, StoreConfiguration } from '../models/models';
+import { Store, StoreConfiguration, Spool } from '../models/models';
+import { ReadStream } from 'fs';
+import FormData from 'form-data';
 import { EasApi } from '../EasApi';
 
 /**
@@ -51,6 +53,24 @@ export class StoreModule {
   public updateConfiguration(store: Store, iniData: string): Promise<any> {
     return this.apiStore.getApiClient()
       .put(`eas/archives/${store.name}/configuration`);
+  }
+
+  public spoolFiles(store: Store, files: ReadStream[]): Promise<Spool[]> {
+    const form: FormData = new FormData();
+
+    for (let i: number = 0; i < files.length; i++) {
+      form.append(
+        (i > 0) ? `attachment${i}` : 'attachment',
+        files[i]
+      );
+    }
+
+    return this.apiStore.getApiJsonClient()
+      .post(`eas/archives/${store.name}/spool`, {
+        body: form,
+        headers: form.getHeaders()
+      })
+      .then((res: any) => res.spool);
   }
 
 }
