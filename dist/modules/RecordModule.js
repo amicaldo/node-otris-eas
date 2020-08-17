@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RecordModule = void 0;
 var form_data_1 = __importDefault(require("form-data"));
+var url_1 = require("url");
 /**
  * Module to handle records
  *
@@ -14,6 +15,11 @@ var RecordModule = /** @class */ (function () {
     function RecordModule(apiClient) {
         this.apiStore = apiClient;
     }
+    RecordModule.prototype.get = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/record/" + recordId)
+            .then(function (res) { return res; });
+    };
     RecordModule.prototype.create = function (store, recordFile, recordIndexMode, attachmentIndexMode) {
         if (recordIndexMode === void 0) { recordIndexMode = 0; }
         if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
@@ -42,9 +48,18 @@ var RecordModule = /** @class */ (function () {
         })
             .then(function (res) { return res.records; });
     };
-    RecordModule.prototype.get = function (store, recordId) {
+    RecordModule.prototype.search = function (store, query) {
+        return this.searchDetails(store, query)
+            .then(function (res) { return res.result; });
+    };
+    RecordModule.prototype.searchDetails = function (store, query) {
+        var params = new url_1.URLSearchParams();
+        Object.entries(query).forEach(function (_a) {
+            var key = _a[0], value = _a[1];
+            return params.set(key, value);
+        });
         return this.apiStore.getApiJsonClient()
-            .get("eas/archives/" + store.name + "/record/" + recordId)
+            .get("eas/archives/" + store.name + "/?" + params.toString())
             .then(function (res) { return res; });
     };
     RecordModule.prototype.getVersion = function (store, recordId) {

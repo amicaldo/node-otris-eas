@@ -45,3 +45,21 @@ export interface Record {
   recordFields: any;
   attachments: any[];
 }
+
+export interface RecordQuery {
+  query?: string;
+  startIndex?: number;
+  itemsPerPage?: number;
+  topn?: number;
+  sort?: string;
+  sortOrder?: 'asc' | 'desc';
+  fields?: string;
+  includeAnnotations?: boolean;
+}
+
+export interface RecordSearchDetails extends RecordQuery {
+  result: Record[];
+  totalHits: number;
+  searchTime: number;
+  outputTime: number;
+}
