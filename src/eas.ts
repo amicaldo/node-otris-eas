@@ -1,82 +1,87 @@
-import DigestClient from 'digest-fetch';
-import { Store } from './models/store';
+import got from 'got';
+import FormData from 'form-data';
+import { ReadStream } from 'fs';
+
+import { Store, Spool, StoreConfiguration } from './models/models';
 
 export class Eas {
-  private base: string;
-  private api: DigestClient;
-  private defaultHeaders = {
-    'x-otris-eas-user': 'manager',
-    'accept': 'application/json'
-  };
+  private apiClient: any;
+  private apiJsonClient: any;
 
   constructor(base: string, username: string, password: string) {
-    this.base = base;
-    this.api = new DigestClient(username, password, { algorithm: 'MD5' });
+    const token = Buffer.from(`${username}:${password}`).toString('base64')
+
+    this.apiClient = got.extend({
+      prefixUrl: base,
+      headers: {
+        'x-otris-eas-user': 'manager',
+        'Accept': 'application/json',
+        'Authorization': `Basic ${token}`
+      }
+    });
+
+    this.apiJsonClient = got.extend({
+      prefixUrl: base,
+      headers: {
+        'x-otris-eas-user': 'manager',
+        'Accept': 'application/json',
+        'Authorization': `Basic ${token}`
+      },
+      responseType: 'json',
+      resolveBodyOnly: true
+    });
   }
 
   /**
    * Stores
    */
   public getStores(): Promise<Store[]> {
-    return this.get('/eas/archives')
-      .then((res: any) => res.json())
-      .then((res: any) => res.stores);
+    return this.apiJsonClient.get('eas/archives');
   }
 
   public createStore(storeName: string, iniData: string): Promise<any> {
-    return this.put(`/eas/archives/${storeName}`, iniData, {
-      'Content-Type': 'plain/text'
-    });
+    return this.apiClient.put(`eas/archives/${storeName}`, {
+      body: iniData
+    })
   }
 
   public deleteStore(store: Store): Promise<any> {
-    return this.delete(`/eas/archives/${store.name}`)
-      .then((res: any) => res.text());
-  }
-
-  public getStoreConfiguration(store: Store): Promise<any> {
-    return this.get(`/eas/archives/${store.name}/configuration`)
-      .then((res: any) => res.json())
-      .then((res: any) => res.configuration);
+    return this.apiClient.delete(`eas/archives/${store.name}`);
   }
 
   public activateStore(store: Store): Promise<any> {
-    return this.put(`/eas/archives/${store.name}/active`)
-      .then((res: any) => res.text());
+    return this.apiClient.put(`eas/archives/${store.name}/active`);
   }
 
   public deactivateStore(store: Store): Promise<any> {
-    return this.delete(`/eas/archives/${store.name}/active`)
-      .then((res: any) => res.text());
+    return this.apiClient.delete(`eas/archives/${store.name}/active`);
   }
 
-  private post(endpoint, body: string = '', headers: object = { }): Promise<any> {
-    return this.api.fetch(`${this.base}${endpoint}`, {
-      method: 'post',
-      headers: { ...this.defaultHeaders, ...headers },
-      body: body
-    });
+  public getStoreConfiguration(store: Store): Promise<StoreConfiguration> {
+    return this.apiJsonClient.get(`eas/archives/${store.name}/configuration`)
+      .then((res: any) => res.configuration);
   }
 
-  private get(endpoint, headers: object = { }): Promise<any> {
-    return this.api.fetch(`${this.base}${endpoint}`, {
-      method: 'get',
-      headers: { ...this.defaultHeaders, ...headers }
-    });
+  public updateStoreConfiguration(store: Store, iniData: string): Promise<any> {
+    return this.apiClient.put(`eas/archives/${store.name}/configuration`);
   }
 
-  private put(endpoint, body: string = '', headers: object = { }): Promise<any> {
-    return this.api.fetch(`${this.base}${endpoint}`, {
-      method: 'put',
-      headers: { ...this.defaultHeaders, ...headers },
-      body: body
-    });
-  }
+  /**
+   * Spool
+   */
+  public spoolFiles(store: Store, files: ReadStream[]): Promise<Spool[]> {
+    const form: FormData = new FormData();
 
-  private delete(endpoint, headers: object = { }): Promise<any> {
-    return this.api.fetch(`${this.base}${endpoint}`, {
-      method: 'delete',
-      headers: { ...this.defaultHeaders, ...headers }
-    });
+    for (let i: number = 0; i < files.length; i++) {
+      form.append(
+        (i > 0) ? `attachment${i}` : 'attachment',
+        files[i]
+      );
+    }
+
+    return this.apiJsonClient.post(`eas/archives/${store.name}/spool`, {
+      body: form,
+      headers: form.getHeaders()
+    }).then((res: any) => res.spool);
   }
 }

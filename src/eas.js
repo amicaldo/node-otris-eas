@@ -1,91 +1,72 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Eas = void 0;
-var digest_fetch_1 = __importDefault(require("digest-fetch"));
+var got_1 = __importDefault(require("got"));
+var form_data_1 = __importDefault(require("form-data"));
 var Eas = /** @class */ (function () {
     function Eas(base, username, password) {
-        this.defaultHeaders = {
-            'x-otris-eas-user': 'manager',
-            'accept': 'application/json'
-        };
-        this.base = base;
-        this.api = new digest_fetch_1.default(username, password, { algorithm: 'MD5' });
+        var token = Buffer.from(username + ":" + password).toString('base64');
+        this.apiClient = got_1.default.extend({
+            prefixUrl: base,
+            headers: {
+                'x-otris-eas-user': 'manager',
+                'Accept': 'application/json',
+                'Authorization': "Basic " + token
+            }
+        });
+        this.apiJsonClient = got_1.default.extend({
+            prefixUrl: base,
+            headers: {
+                'x-otris-eas-user': 'manager',
+                'Accept': 'application/json',
+                'Authorization': "Basic " + token
+            },
+            responseType: 'json',
+            resolveBodyOnly: true
+        });
     }
     /**
      * Stores
      */
     Eas.prototype.getStores = function () {
-        return this.get('/eas/archives')
-            .then(function (res) { return res.json(); })
-            .then(function (res) { return res.stores; });
+        return this.apiJsonClient.get('eas/archives');
     };
     Eas.prototype.createStore = function (storeName, iniData) {
-        return this.put("/eas/archives/" + storeName, iniData, {
-            'Content-Type': 'plain/text'
+        return this.apiClient.put("eas/archives/" + storeName, {
+            body: iniData
         });
     };
     Eas.prototype.deleteStore = function (store) {
-        return this.delete("/eas/archives/" + store.name)
-            .then(function (res) { return res.text(); });
-    };
-    Eas.prototype.getStoreConfiguration = function (store) {
-        return this.get("/eas/archives/" + store.name + "/configuration")
-            .then(function (res) { return res.json(); })
-            .then(function (res) { return res.configuration; });
+        return this.apiClient.delete("eas/archives/" + store.name);
     };
     Eas.prototype.activateStore = function (store) {
-        return this.put("/eas/archives/" + store.name + "/active")
-            .then(function (res) { return res.text(); });
+        return this.apiClient.put("eas/archives/" + store.name + "/active");
     };
     Eas.prototype.deactivateStore = function (store) {
-        return this.delete("/eas/archives/" + store.name + "/active")
-            .then(function (res) { return res.text(); });
+        return this.apiClient.delete("eas/archives/" + store.name + "/active");
     };
-    Eas.prototype.post = function (endpoint, body, headers) {
-        if (body === void 0) { body = ''; }
-        if (headers === void 0) { headers = {}; }
-        return this.api.fetch("" + this.base + endpoint, {
-            method: 'post',
-            headers: __assign(__assign({}, this.defaultHeaders), headers),
-            body: body
-        });
+    Eas.prototype.getStoreConfiguration = function (store) {
+        return this.apiJsonClient.get("eas/archives/" + store.name + "/configuration")
+            .then(function (res) { return res.configuration; });
     };
-    Eas.prototype.get = function (endpoint, headers) {
-        if (headers === void 0) { headers = {}; }
-        return this.api.fetch("" + this.base + endpoint, {
-            method: 'get',
-            headers: __assign(__assign({}, this.defaultHeaders), headers)
-        });
+    Eas.prototype.updateStoreConfiguration = function (store, iniData) {
+        return this.apiClient.put("eas/archives/" + store.name + "/configuration");
     };
-    Eas.prototype.put = function (endpoint, body, headers) {
-        if (body === void 0) { body = ''; }
-        if (headers === void 0) { headers = {}; }
-        return this.api.fetch("" + this.base + endpoint, {
-            method: 'put',
-            headers: __assign(__assign({}, this.defaultHeaders), headers),
-            body: body
-        });
-    };
-    Eas.prototype.delete = function (endpoint, headers) {
-        if (headers === void 0) { headers = {}; }
-        return this.api.fetch("" + this.base + endpoint, {
-            method: 'delete',
-            headers: __assign(__assign({}, this.defaultHeaders), headers)
-        });
+    /**
+     * Spool
+     */
+    Eas.prototype.spoolFiles = function (store, files) {
+        var form = new form_data_1.default();
+        for (var i = 0; i < files.length; i++) {
+            form.append((i > 0) ? "attachment" + i : 'attachment', files[i]);
+        }
+        return this.apiJsonClient.post("eas/archives/" + store.name + "/spool", {
+            body: form,
+            headers: form.getHeaders()
+        }).then(function (res) { return res.spool; });
     };
     return Eas;
 }());
