@@ -1,11 +1,20 @@
-import { Record, RecordCreate, RecordFragment, RecordQuery, RecordSearchDetails, RecordVerification, RecordVersion, Store } from '../models/models';
-import { ReadStream } from 'fs';
+import {
+  Record, RecordCreate,
+  RecordFlags,
+  RecordFragment,
+  RecordQuery,
+  RecordSearchDetails,
+  RecordSearchExplanation,
+  RecordVerification,
+  RecordVersion,
+  Store
+} from '../models/models';
 import { EasApi } from '../EasApi';
-import { URLSearchParams } from 'url';
-import * as xmlbuilder2 from 'xmlbuilder2';
-import tmp from 'tmp';
-import fs from 'fs';
+import { URLParams } from '../helpers/URLParams';
 import FormData from 'form-data';
+import fs from 'fs';
+import tmp from 'tmp';
+import * as xmlbuilder2 from 'xmlbuilder2';
 
 /**
  * Module to handle records
@@ -84,17 +93,19 @@ export class RecordModule {
       .then((res: any) => res.records);
   }
 
+  public delete(store: Store, recordId: string): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .delete(`eas/archives/${store.name}/record/${recordId}`);
+  }
+
   public search(store: Store, query: RecordQuery): Promise<Record[]> {
     return this.searchDetails(store, query)
       .then((res: RecordSearchDetails) => res.result);
   }
 
   public searchDetails(store: Store, query: RecordQuery): Promise<RecordSearchDetails> {
-    const params = new URLSearchParams();
-    Object.entries(query).forEach(([key, value]) => params.set(key, value));
-
     return this.apiStore.getApiJsonClient()
-      .get(`eas/archives/${store.name}/?${params.toString()}`)
+      .get(`eas/archives/${store.name}/?${URLParams.getParamsString(query)}`)
       .then((res: any) => res);
   }
 
@@ -110,10 +121,32 @@ export class RecordModule {
       .then((res: any) => res);
   }
 
+  public getSearchExplanation(store: Store, recordId: string, query: string): Promise<RecordSearchExplanation> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/record/${recordId}/explain?query=${query}`)
+      .then((res: any) => res);
+  }
+
+  public getFlags(store: Store, recordId: string): Promise<RecordFlags> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/record/${recordId}/flags`)
+      .then((res: any) => res);
+  }
+
+  public setProtectedFlag(store: Store, recordId: string): Promise<any> {
+    return this.apiStore.getApiClient()
+      .put(`eas/archives/${store.name}/record/${recordId}/flags/protect`);
+  }
+
+  public removeProtectedFlag(store: Store, recordId: string): Promise<any> {
+    return this.apiStore.getApiClient()
+      .delete(`eas/archives/${store.name}/record/${recordId}/flags/protect`);
+  }
+
   public generateRecordXml(record: RecordCreate): string {
     const xmlRecord = xmlbuilder2
       .create({ version: '1.0' })
-      .ele('records', { xmlns: 'http://namespace.otris.de/2010/09/archive/recordIntern '})
+      .ele('records', { xmlns: 'http://namespace.otris.de/2010/09/archive/recordIntern' })
       .ele('record');
 
     if (record.title) {

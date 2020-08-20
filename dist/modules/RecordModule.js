@@ -23,11 +23,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RecordModule = void 0;
-var url_1 = require("url");
-var xmlbuilder2 = __importStar(require("xmlbuilder2"));
-var tmp_1 = __importDefault(require("tmp"));
-var fs_1 = __importDefault(require("fs"));
+var URLParams_1 = require("../helpers/URLParams");
 var form_data_1 = __importDefault(require("form-data"));
+var fs_1 = __importDefault(require("fs"));
+var tmp_1 = __importDefault(require("tmp"));
+var xmlbuilder2 = __importStar(require("xmlbuilder2"));
 /**
  * Module to handle records
  *
@@ -84,18 +84,17 @@ var RecordModule = /** @class */ (function () {
         })
             .then(function (res) { return res.records; });
     };
+    RecordModule.prototype.delete = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .delete("eas/archives/" + store.name + "/record/" + recordId);
+    };
     RecordModule.prototype.search = function (store, query) {
         return this.searchDetails(store, query)
             .then(function (res) { return res.result; });
     };
     RecordModule.prototype.searchDetails = function (store, query) {
-        var params = new url_1.URLSearchParams();
-        Object.entries(query).forEach(function (_a) {
-            var key = _a[0], value = _a[1];
-            return params.set(key, value);
-        });
         return this.apiStore.getApiJsonClient()
-            .get("eas/archives/" + store.name + "/?" + params.toString())
+            .get("eas/archives/" + store.name + "/?" + URLParams_1.URLParams.getParamsString(query))
             .then(function (res) { return res; });
     };
     RecordModule.prototype.getVersion = function (store, recordId) {
@@ -108,10 +107,28 @@ var RecordModule = /** @class */ (function () {
             .get("eas/archives/" + store.name + "/record/" + recordId + "/verify")
             .then(function (res) { return res; });
     };
+    RecordModule.prototype.getSearchExplanation = function (store, recordId, query) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/record/" + recordId + "/explain?query=" + query)
+            .then(function (res) { return res; });
+    };
+    RecordModule.prototype.getFlags = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/record/" + recordId + "/flags")
+            .then(function (res) { return res; });
+    };
+    RecordModule.prototype.setProtectedFlag = function (store, recordId) {
+        return this.apiStore.getApiClient()
+            .put("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect");
+    };
+    RecordModule.prototype.removeProtectedFlag = function (store, recordId) {
+        return this.apiStore.getApiClient()
+            .delete("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect");
+    };
     RecordModule.prototype.generateRecordXml = function (record) {
         var xmlRecord = xmlbuilder2
             .create({ version: '1.0' })
-            .ele('records', { xmlns: 'http://namespace.otris.de/2010/09/archive/recordIntern ' })
+            .ele('records', { xmlns: 'http://namespace.otris.de/2010/09/archive/recordIntern' })
             .ele('record');
         if (record.title) {
             xmlRecord.ele('title').txt(record.title);

@@ -1,7 +1,8 @@
-import { Store, StoreConfiguration, Spool } from '../models/models';
+import { RetentionList, Spool, Store, StoreConfiguration, StoreTermListQuery } from '../models/models';
 import { ReadStream } from 'fs';
 import FormData from 'form-data';
 import { EasApi } from '../EasApi';
+import { URLParams } from '../helpers/URLParams';
 
 /**
  * Module to handle stores
@@ -71,6 +72,55 @@ export class StoreModule {
         headers: form.getHeaders()
       })
       .then((res: any) => res.spool);
+  }
+
+  public getRetentions(store: Store): Promise<RetentionList[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention`)
+      .then((res: any) => res.list);
+  }
+
+  public getRecordsMarkedDeleted(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/marked-deleted`)
+      .then((res: any) => res.list);
+  }
+
+  public getRecordsExpiredMin(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-min`)
+      .then((res: any) => res.list);
+  }
+
+  public deleteRecordsExpiredMin(store: Store): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .delete(`eas/archives/${store.name}/retention/expired-min`);
+  }
+
+  public getRecordsExpiredMax(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-max`)
+      .then((res: any) => res.list);
+  }
+
+  public deleteRecordsExpiredMax(store: Store): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-max`);
+  }
+
+  public getTermList(store: Store, query: StoreTermListQuery): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/termlist?${URLParams.getParamsString(query)}`);
+  }
+
+  public getRetentionPolicy(store: Store, retentionPolicyId: string): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retentionPolicy/${retentionPolicyId}`);
+  }
+
+  public deleteRetentionPolicy(store: Store, retentionPolicyId: string): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .delete(`eas/archives/${store.name}/retentionPolicy/${retentionPolicyId}`);
   }
 
 }

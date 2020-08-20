@@ -1,7 +1,9 @@
 import got, { Got } from 'got';
+import { ArchivesModule } from './modules/ArchivesModule';
+import { AttachmentModule } from './modules/AttachmentModule';
+import { PoliciesModule } from './modules/PoliciesModule';
 import { RecordModule } from './modules/RecordModule';
 import { StoreModule } from './modules/StoreModule';
-import { AttachmentModule } from './modules/AttachmentModule';
 
 export class EasApi {
 
@@ -10,9 +12,11 @@ export class EasApi {
   private readonly apiJsonClient: Got;
 
   // API modules
+  private readonly archivesModule: ArchivesModule;
+  private readonly attachmentModule: AttachmentModule;
+  private readonly policiesModule: PoliciesModule;
   private readonly recordModule: RecordModule;
   private readonly storeModule: StoreModule;
-  private readonly attachmentModule: AttachmentModule;
 
   constructor(base: string, username: string, password: string) {
     const token = Buffer.from(`${username}:${password}`).toString('base64');
@@ -31,9 +35,11 @@ export class EasApi {
       resolveBodyOnly: true
     });
 
+    this.archivesModule = new ArchivesModule(this);
+    this.attachmentModule = new AttachmentModule(this);
+    this.policiesModule = new PoliciesModule(this);
     this.recordModule = new RecordModule(this);
     this.storeModule = new StoreModule(this);
-    this.attachmentModule = new AttachmentModule(this);
   }
 
   // Get API clients
@@ -46,6 +52,18 @@ export class EasApi {
   }
 
   // Get API modules
+  public archives(): ArchivesModule {
+    return this.archivesModule;
+  }
+
+  public attachments(): AttachmentModule {
+    return this.attachmentModule;
+  }
+
+  public policies(): PoliciesModule {
+    return this.policiesModule;
+  }
+
   public records(): RecordModule {
     return this.recordModule;
   }
@@ -54,7 +72,4 @@ export class EasApi {
     return this.storeModule;
   }
 
-  public attachments(): AttachmentModule {
-    return this.attachmentModule;
-  }
 }

@@ -18,6 +18,13 @@ export interface Spool {
   path: string;
 }
 
+export interface StoreTermListQuery {
+  fieldName: string;
+  prefix: string;
+  maxTerms: number;
+  freqThreshold: number;
+}
+
 export interface Link {
   type: string;
   title: string;
@@ -60,6 +67,7 @@ export interface RecordQuery {
   sortOrder?: 'asc' | 'desc';
   fields?: string;
   includeAnnotations?: boolean;
+  searchOnlyNewestVersion?: 0 | 1 | 2;
 }
 
 export interface RecordSearchDetails extends RecordQuery {
@@ -67,4 +75,28 @@ export interface RecordSearchDetails extends RecordQuery {
   totalHits: number;
   searchTime: number;
   outputTime: number;
+}
+
+export interface RecordSearchExplanation {
+  owner: string;
+  query: string;
+  explanations: [{
+    id: string;
+    documentType: boolean;
+    text: string;
+  }];
+}
+
+export interface RecordFlags {
+  delete: string;
+  protect: string;
+}
+
+export interface RetentionList {
+  id: string;
+  link: {
+    type: string;
+    title: string;
+    href: string;
+  };
 }

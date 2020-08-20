@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StoreModule = void 0;
 var form_data_1 = __importDefault(require("form-data"));
+var URLParams_1 = require("../helpers/URLParams");
 /**
  * Module to handle stores
  *
@@ -57,6 +58,46 @@ var StoreModule = /** @class */ (function () {
             headers: form.getHeaders()
         })
             .then(function (res) { return res.spool; });
+    };
+    StoreModule.prototype.getRetentions = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention")
+            .then(function (res) { return res.list; });
+    };
+    StoreModule.prototype.getRecordsMarkedDeleted = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/marked-deleted")
+            .then(function (res) { return res.list; });
+    };
+    StoreModule.prototype.getRecordsExpiredMin = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-min")
+            .then(function (res) { return res.list; });
+    };
+    StoreModule.prototype.deleteRecordsExpiredMin = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .delete("eas/archives/" + store.name + "/retention/expired-min");
+    };
+    StoreModule.prototype.getRecordsExpiredMax = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-max")
+            .then(function (res) { return res.list; });
+    };
+    StoreModule.prototype.deleteRecordsExpiredMax = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-max");
+    };
+    StoreModule.prototype.getTermList = function (store, query) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/termlist?" + URLParams_1.URLParams.getParamsString(query));
+    };
+    StoreModule.prototype.getRetentionPolicy = function (store, retentionPolicyId) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retentionPolicy/" + retentionPolicyId);
+    };
+    StoreModule.prototype.deleteRetentionPolicy = function (store, retentionPolicyId) {
+        return this.apiStore.getApiJsonClient()
+            .delete("eas/archives/" + store.name + "/retentionPolicy/" + retentionPolicyId);
     };
     return StoreModule;
 }());
