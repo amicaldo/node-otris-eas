@@ -1,8 +1,11 @@
-import { Record, RecordFragment, RecordQuery, RecordSearchDetails, RecordVerification, RecordVersion, Store } from '../models/models';
+import { Record, RecordCreate, RecordFragment, RecordQuery, RecordSearchDetails, RecordVerification, RecordVersion, Store } from '../models/models';
 import { ReadStream } from 'fs';
-import FormData from 'form-data';
 import { EasApi } from '../EasApi';
 import { URLSearchParams } from 'url';
+import * as xmlbuilder2 from 'xmlbuilder2';
+import tmp from 'tmp';
+import fs from 'fs';
+import FormData from 'form-data';
 
 /**
  * Module to handle records
@@ -32,13 +35,18 @@ export class RecordModule {
 
   public create(
     store: Store,
-    recordFile: ReadStream,
+    record: RecordCreate = { },
     recordIndexMode: number = 0,
     attachmentIndexMode: number = 0
   ): Promise<RecordFragment[]> {
     const form: FormData = new FormData();
 
-    form.append('record', recordFile);
+    const xmlFile: any = tmp.fileSync({ postfix: '.xml' });
+    const xmlData: string = this.generateRecordXml(record);
+
+    fs.writeFileSync(xmlFile.name, xmlData);
+
+    form.append('record', fs.createReadStream(xmlFile.name));
     form.append('recordIndexMode', recordIndexMode);
     form.append('attachmentIndexMode', attachmentIndexMode);
 
@@ -53,13 +61,18 @@ export class RecordModule {
   public update(
     store: Store,
     recordId: string,
-    recordFile: ReadStream,
+    record: RecordCreate = { },
     recordIndexMode: number = 0,
     attachmentIndexMode: number = 0
   ): Promise<RecordFragment[]> {
     const form: FormData = new FormData();
 
-    form.append('record', recordFile);
+    const xmlFile: any = tmp.fileSync({ postfix: '.xml' });
+    const xmlData: string = this.generateRecordXml(record);
+
+    fs.writeFileSync(xmlFile.name, xmlData);
+
+    form.append('record', fs.createReadStream(xmlFile.name));
     form.append('recordIndexMode', recordIndexMode);
     form.append('attachmentIndexMode', attachmentIndexMode);
 
@@ -95,6 +108,29 @@ export class RecordModule {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/${store.name}/record/${recordId}/verify`)
       .then((res: any) => res);
+  }
+
+  public generateRecordXml(record: RecordCreate): string {
+    const xmlRecord = xmlbuilder2
+      .create({ version: '1.0' })
+      .ele('records', { xmlns: 'http://namespace.otris.de/2010/09/archive/recordIntern '})
+      .ele('record');
+
+    if (record.title) {
+      xmlRecord.ele('title').txt(record.title);
+    }
+
+    if (record.attachments) {
+      for (const attachment of record.attachments) {
+        xmlRecord
+          .ele('attachment')
+          .ele('name').txt(attachment.name)
+          .up()
+          .ele('path').txt(attachment.path);
+      }
+    }
+
+    return xmlRecord.end({ prettyPrint: true });
   }
 
 }

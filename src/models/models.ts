@@ -40,10 +40,15 @@ export interface RecordVerification {
   isValid: boolean;
 }
 
+export interface RecordCreate {
+  attachments?: any[];
+  title?: string;
+}
+
 export interface Record {
-  headerFields: any;
-  recordFields: any;
-  attachments: any[];
+  headerFields?: any;
+  recordFields?: any;
+  attachments?: any[];
 }
 
 export interface RecordQuery {
