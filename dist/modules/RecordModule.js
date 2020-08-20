@@ -20,6 +20,12 @@ var RecordModule = /** @class */ (function () {
             .get("eas/archives/" + store.name + "/record/" + recordId)
             .then(function (res) { return res; });
     };
+    RecordModule.prototype.getAll = function (store) {
+        return this.search(store, {
+            query: 'record',
+            itemsPerPage: Math.pow(2, 32) / 2 - 1 // Max int value
+        });
+    };
     RecordModule.prototype.create = function (store, recordFile, recordIndexMode, attachmentIndexMode) {
         if (recordIndexMode === void 0) { recordIndexMode = 0; }
         if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }

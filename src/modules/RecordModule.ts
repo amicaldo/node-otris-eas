@@ -23,6 +23,13 @@ export class RecordModule {
       .then((res: any) => res);
   }
 
+  public getAll(store: Store): Promise<Record[]> {
+    return this.search(store, {
+      query: 'record',
+      itemsPerPage: Math.pow(2, 32) / 2 - 1 // Max int value
+    });
+  }
+
   public create(
     store: Store,
     recordFile: ReadStream,
