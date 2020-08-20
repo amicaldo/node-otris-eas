@@ -10,13 +10,15 @@ export class AttachmentModule {
     this.apiStore = apiClient;
   }
 
-  public get(
+  public fetch(
     store: Store,
     recordId: string,
     attachmentId: string
   ): Promise<any> {
-    return this.apiStore.getApiJsonClient()
-      .get(`eas/archives/${store.name}/record/${recordId}/attachment/${attachmentId}`)
-      .then((res: any) => res);
+    return this.apiStore.getApiClient()
+      .get(`eas/archives/${store.name}/record/${recordId}/attachment/${attachmentId}`, {
+        headers: { 'Accept': '*/*' }
+      })
+      .then((res: any) => res.body);
   }
 }
