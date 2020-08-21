@@ -42,6 +42,34 @@ export class RecordModule {
     });
   }
 
+  public getRecordsMarkedDeleted(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/marked-deleted`)
+      .then((res: any) => res.list);
+  }
+
+  public getRecordsExpiredMin(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-min`)
+      .then((res: any) => res.list);
+  }
+
+  public deleteRecordsExpiredMin(store: Store): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .delete(`eas/archives/${store.name}/retention/expired-min`);
+  }
+
+  public getRecordsExpiredMax(store: Store): Promise<any[]> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-max`)
+      .then((res: any) => res.list);
+  }
+
+  public deleteRecordsExpiredMax(store: Store): Promise<any> {
+    return this.apiStore.getApiJsonClient()
+      .get(`eas/archives/${store.name}/retention/expired-max`);
+  }
+
   public create(
     store: Store,
     record: RecordCreate = { },

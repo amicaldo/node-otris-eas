@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -47,6 +47,29 @@ var RecordModule = /** @class */ (function () {
             query: 'record',
             itemsPerPage: Math.pow(2, 32) / 2 - 1 // Max int value
         });
+    };
+    RecordModule.prototype.getRecordsMarkedDeleted = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/marked-deleted")
+            .then(function (res) { return res.list; });
+    };
+    RecordModule.prototype.getRecordsExpiredMin = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-min")
+            .then(function (res) { return res.list; });
+    };
+    RecordModule.prototype.deleteRecordsExpiredMin = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .delete("eas/archives/" + store.name + "/retention/expired-min");
+    };
+    RecordModule.prototype.getRecordsExpiredMax = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-max")
+            .then(function (res) { return res.list; });
+    };
+    RecordModule.prototype.deleteRecordsExpiredMax = function (store) {
+        return this.apiStore.getApiJsonClient()
+            .get("eas/archives/" + store.name + "/retention/expired-max");
     };
     RecordModule.prototype.create = function (store, record, recordIndexMode, attachmentIndexMode) {
         if (record === void 0) { record = {}; }
