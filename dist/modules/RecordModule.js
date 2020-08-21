@@ -75,13 +75,7 @@ var RecordModule = /** @class */ (function () {
         if (record === void 0) { record = {}; }
         if (recordIndexMode === void 0) { recordIndexMode = 0; }
         if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
-        var form = new form_data_1.default();
-        var xmlFile = tmp_1.default.fileSync({ postfix: '.xml' });
-        var xmlData = this.generateRecordXml(record);
-        fs_1.default.writeFileSync(xmlFile.name, xmlData);
-        form.append('record', fs_1.default.createReadStream(xmlFile.name));
-        form.append('recordIndexMode', recordIndexMode);
-        form.append('attachmentIndexMode', attachmentIndexMode);
+        var form = this.generateRecordCreateForm(record, recordIndexMode, attachmentIndexMode);
         return this.apiStore.getApiJsonClient()
             .post("eas/archives/" + store.name + "/record", {
             body: form,
@@ -93,13 +87,7 @@ var RecordModule = /** @class */ (function () {
         if (record === void 0) { record = {}; }
         if (recordIndexMode === void 0) { recordIndexMode = 0; }
         if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
-        var form = new form_data_1.default();
-        var xmlFile = tmp_1.default.fileSync({ postfix: '.xml' });
-        var xmlData = this.generateRecordXml(record);
-        fs_1.default.writeFileSync(xmlFile.name, xmlData);
-        form.append('record', fs_1.default.createReadStream(xmlFile.name));
-        form.append('recordIndexMode', recordIndexMode);
-        form.append('attachmentIndexMode', attachmentIndexMode);
+        var form = this.generateRecordCreateForm(record, recordIndexMode, attachmentIndexMode);
         return this.apiStore.getApiJsonClient()
             .post("eas/archives/" + store.name + "/record/" + recordId, {
             body: form,
@@ -147,6 +135,19 @@ var RecordModule = /** @class */ (function () {
     RecordModule.prototype.removeProtectedFlag = function (store, recordId) {
         return this.apiStore.getApiClient()
             .delete("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect");
+    };
+    RecordModule.prototype.generateRecordCreateForm = function (record, recordIndexMode, attachmentIndexMode) {
+        if (record === void 0) { record = {}; }
+        if (recordIndexMode === void 0) { recordIndexMode = 0; }
+        if (attachmentIndexMode === void 0) { attachmentIndexMode = 0; }
+        var form = new form_data_1.default();
+        var xmlFile = tmp_1.default.fileSync({ postfix: '.xml' });
+        var xmlData = this.generateRecordXml(record);
+        fs_1.default.writeFileSync(xmlFile.name, xmlData);
+        form.append('record', fs_1.default.createReadStream(xmlFile.name));
+        form.append('recordIndexMode', recordIndexMode);
+        form.append('attachmentIndexMode', attachmentIndexMode);
+        return form;
     };
     RecordModule.prototype.generateRecordXml = function (record) {
         var xmlRecord = xmlbuilder2

@@ -13,7 +13,7 @@ import { EasApi } from '../EasApi';
 import { URLParams } from '../helpers/URLParams';
 import FormData from 'form-data';
 import fs from 'fs';
-import tmp from 'tmp';
+import tmp, { FileResult } from 'tmp';
 import * as xmlbuilder2 from 'xmlbuilder2';
 
 /**
@@ -76,16 +76,7 @@ export class RecordModule {
     recordIndexMode: number = 0,
     attachmentIndexMode: number = 0
   ): Promise<RecordFragment[]> {
-    const form: FormData = new FormData();
-
-    const xmlFile: any = tmp.fileSync({ postfix: '.xml' });
-    const xmlData: string = this.generateRecordXml(record);
-
-    fs.writeFileSync(xmlFile.name, xmlData);
-
-    form.append('record', fs.createReadStream(xmlFile.name));
-    form.append('recordIndexMode', recordIndexMode);
-    form.append('attachmentIndexMode', attachmentIndexMode);
+    const form: FormData = this.generateRecordCreateForm(record, recordIndexMode, attachmentIndexMode);
 
     return this.apiStore.getApiJsonClient()
       .post(`eas/archives/${store.name}/record`, {
@@ -102,16 +93,7 @@ export class RecordModule {
     recordIndexMode: number = 0,
     attachmentIndexMode: number = 0
   ): Promise<RecordFragment[]> {
-    const form: FormData = new FormData();
-
-    const xmlFile: any = tmp.fileSync({ postfix: '.xml' });
-    const xmlData: string = this.generateRecordXml(record);
-
-    fs.writeFileSync(xmlFile.name, xmlData);
-
-    form.append('record', fs.createReadStream(xmlFile.name));
-    form.append('recordIndexMode', recordIndexMode);
-    form.append('attachmentIndexMode', attachmentIndexMode);
+    const form: FormData = this.generateRecordCreateForm(record, recordIndexMode, attachmentIndexMode);
 
     return this.apiStore.getApiJsonClient()
       .post(`eas/archives/${store.name}/record/${recordId}`, {
@@ -169,6 +151,25 @@ export class RecordModule {
   public removeProtectedFlag(store: Store, recordId: string): Promise<any> {
     return this.apiStore.getApiClient()
       .delete(`eas/archives/${store.name}/record/${recordId}/flags/protect`);
+  }
+
+  public generateRecordCreateForm(
+    record: RecordCreate = { },
+    recordIndexMode: number = 0,
+    attachmentIndexMode: number = 0
+  ): FormData {
+    const form: FormData = new FormData();
+
+    const xmlFile: FileResult = tmp.fileSync({ postfix: '.xml' });
+    const xmlData: string = this.generateRecordXml(record);
+
+    fs.writeFileSync(xmlFile.name, xmlData);
+
+    form.append('record', fs.createReadStream(xmlFile.name));
+    form.append('recordIndexMode', recordIndexMode);
+    form.append('attachmentIndexMode', attachmentIndexMode);
+
+    return form;
   }
 
   public generateRecordXml(record: RecordCreate): string {

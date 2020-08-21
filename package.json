@@ -14,6 +14,7 @@
   "author": "amicaldo GmbH <admin@amicaldo.de>",
   "license": "",
   "dependencies": {
+    "@types/tmp": "^0.2.0",
     "form-data": "^3.0.0",
     "got": "^11.5.2",
     "tmp": "^0.2.1",
