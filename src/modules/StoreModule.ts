@@ -1,8 +1,8 @@
+import { EasApi } from '../EasApi';
 import { RetentionList, Spool, Store, StoreConfiguration, StoreTermListQuery } from '../models/models';
+import { URLParams } from '../helpers/URLParams';
 import { ReadStream } from 'fs';
 import FormData from 'form-data';
-import { EasApi } from '../EasApi';
-import { URLParams } from '../helpers/URLParams';
 
 /**
  * Module to handle stores
@@ -17,12 +17,24 @@ export class StoreModule {
     this.apiStore = apiClient;
   }
 
+  /**
+   * Gets all existing stores.
+   *
+   * @returns Array of all existing stores with name and URL
+   */
   public getAll(): Promise<Store[]> {
     return this.apiStore.getApiJsonClient()
       .get('eas/archives')
       .then((res: any) => res.stores);
   }
 
+  /**
+   * Creates a store.
+   *
+   * @param storeName - Name of the new store
+   * @param iniData - Configuration of the new store as INI
+   * @returns Empty
+   */
   public create(storeName: string, iniData: string): Promise<any> {
     return this.apiStore.getApiClient()
       .put(`eas/archives/${storeName}`, {
@@ -30,32 +42,70 @@ export class StoreModule {
       });
   }
 
+  /**
+   * Deletes a store.
+   *
+   * @param store - Store to be deleted
+   * @returns Empty
+   */
   public delete(store: Store): Promise<any> {
     return this.apiStore.getApiClient()
       .delete(`eas/archives/${store.name}`);
   }
 
+  /**
+   * Activates a store.
+   *
+   * @param store - Store to activate
+   * @returns Empty
+   */
   public activate(store: Store): Promise<any> {
     return this.apiStore.getApiClient()
       .put(`eas/archives/${store.name}/active`);
   }
 
+  /**
+   * Deactivates a store.
+   *
+   * @param store - Store to deactivate
+   * @returns Empty
+   */
   public deactivate(store: Store): Promise<any> {
     return this.apiStore.getApiClient()
       .delete(`eas/archives/${store.name}/active`);
   }
 
+  /**
+   * Requests a stores configuration.
+   *
+   * @param store - The store to request the configuration from
+   * @returns Configuration object of the store
+   */
   public getConfiguration(store: Store): Promise<StoreConfiguration> {
-    return this.apiStore.getApiClient()
+    return this.apiStore.getApiJsonClient()
       .get(`eas/archives/${store.name}/configuration`)
       .then((res: any) => res.configuration);
   }
 
+  /**
+   * Changes the configuration of a store.
+   *
+   * @param store - The store to update the configuration of
+   * @param iniData - The updated configuration of the store as INI
+   * @returns Empty
+   */
   public updateConfiguration(store: Store, iniData: string): Promise<any> {
     return this.apiStore.getApiClient()
       .put(`eas/archives/${store.name}/configuration`);
   }
 
+  /**
+   * Spools a file to later attach it to a record.
+   *
+   * @param store - The store to spool the file in
+   * @param files - The file to spool as ReadStream
+   * @returns List of the spooled files
+   */
   public spoolFiles(store: Store, files: ReadStream[]): Promise<Spool[]> {
     const form: FormData = new FormData();
 
@@ -74,25 +124,29 @@ export class StoreModule {
       .then((res: any) => res.spool);
   }
 
+  /**
+   * Retrieves the references to the list of deletable records.
+   *
+   * @param store - Store to search for deletable
+   * @returns List of deletable records
+   */
   public getRetentions(store: Store): Promise<RetentionList[]> {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/${store.name}/retention`)
       .then((res: any) => res.list);
   }
 
+  /**
+   * Retrieves a list of terms from the index that start with a certain character string (prefix)
+   * and for which the number of entries in the index exceeds the specified threshold.
+   *
+   * @param store - Store to query the index of
+   * @param query - Data to query
+   * @returns List of queried terms
+   */
   public getTermList(store: Store, query: StoreTermListQuery): Promise<any> {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/${store.name}/termlist?${URLParams.getParamsString(query)}`);
-  }
-
-  public getRetentionPolicy(store: Store, retentionPolicyId: string): Promise<any> {
-    return this.apiStore.getApiJsonClient()
-      .get(`eas/archives/${store.name}/retentionPolicy/${retentionPolicyId}`);
-  }
-
-  public deleteRetentionPolicy(store: Store, retentionPolicyId: string): Promise<any> {
-    return this.apiStore.getApiJsonClient()
-      .delete(`eas/archives/${store.name}/retentionPolicy/${retentionPolicyId}`);
   }
 
 }

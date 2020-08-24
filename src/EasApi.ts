@@ -1,7 +1,7 @@
 import got, { Got } from 'got';
-import { ArchivesModule } from './modules/ArchivesModule';
+import { ArchiveModule } from './modules/ArchiveModule';
 import { AttachmentModule } from './modules/AttachmentModule';
-import { PoliciesModule } from './modules/PoliciesModule';
+import { PolicyModule } from './modules/PolicyModule';
 import { RecordModule } from './modules/RecordModule';
 import { StoreModule } from './modules/StoreModule';
 
@@ -12,9 +12,9 @@ export class EasApi {
   private readonly apiJsonClient: Got;
 
   // API modules
-  private readonly archivesModule: ArchivesModule;
+  private readonly archiveModule: ArchiveModule;
   private readonly attachmentModule: AttachmentModule;
-  private readonly policiesModule: PoliciesModule;
+  private readonly policyModule: PolicyModule;
   private readonly recordModule: RecordModule;
   private readonly storeModule: StoreModule;
 
@@ -35,39 +35,62 @@ export class EasApi {
       resolveBodyOnly: true
     });
 
-    this.archivesModule = new ArchivesModule(this);
+    this.archiveModule = new ArchiveModule(this);
     this.attachmentModule = new AttachmentModule(this);
-    this.policiesModule = new PoliciesModule(this);
+    this.policyModule = new PolicyModule(this);
     this.recordModule = new RecordModule(this);
     this.storeModule = new StoreModule(this);
   }
 
   // Get API clients
+
+  /**
+   * Gets the regular API client.
+   */
   public getApiClient(): Got {
     return this.apiClient;
   }
 
+  /**
+   * Gets the API client that resolves JSON
+   */
   public getApiJsonClient(): Got {
     return this.apiJsonClient;
   }
 
   // Get API modules
-  public archives(): ArchivesModule {
-    return this.archivesModule;
+
+  /**
+   * Gets the module to handle archives.
+   */
+  public archives(): ArchiveModule {
+    return this.archiveModule;
   }
 
+  /**
+   * Gets the module to handle attachments.
+   */
   public attachments(): AttachmentModule {
     return this.attachmentModule;
   }
 
-  public policies(): PoliciesModule {
-    return this.policiesModule;
+  /**
+   * Gets the module to handle policies.
+   */
+  public policies(): PolicyModule {
+    return this.policyModule;
   }
 
+  /**
+   * Gets the module to handle records.
+   */
   public records(): RecordModule {
     return this.recordModule;
   }
 
+  /**
+   * Gets the module to handle stores.
+   */
   public stores(): StoreModule {
     return this.storeModule;
   }

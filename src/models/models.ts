@@ -19,9 +19,25 @@ export interface Spool {
 }
 
 export interface StoreTermListQuery {
+  /**
+   * Name of the field from the index whose terms are to be queried.
+   * Default value is `_body`.
+   */
   fieldName: string;
+  /**
+   * String with which the queried terms should begin. If no prefix is specified, all terms from the field are returned.
+   */
   prefix: string;
+  /**
+   * Maximum number of terms to be returned.
+   * Default value is `10`.
+   */
   maxTerms: number;
+  /**
+   * Threshold value for the frequency of occurrence of the terms in index entries.
+   * Only terms which have a greater or equal frequency to the threshold value will be returned.
+   * Default value is `0`.
+   */
   freqThreshold: number;
 }
 

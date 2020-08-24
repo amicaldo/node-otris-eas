@@ -1,15 +1,22 @@
-import { Record, RecordFragment, Store } from '../models/models';
-import { ReadStream } from 'fs';
-import FormData from 'form-data';
 import { EasApi } from '../EasApi';
+import { Store } from '../models/models';
 
 export class AttachmentModule {
+
   private readonly apiStore: EasApi;
 
   constructor(apiClient: EasApi) {
     this.apiStore = apiClient;
   }
 
+  /**
+   * Requests an attachment.
+   *
+   * @param store - The store to request the attachment from
+   * @param recordId - The ID of the record containing the attachment
+   * @param attachmentId - The ID of the attachment to retrieve
+   * @returns The requested attachment
+   */
   public fetch(
     store: Store,
     recordId: string,
@@ -21,4 +28,5 @@ export class AttachmentModule {
       })
       .then((res: any) => res.body);
   }
+
 }

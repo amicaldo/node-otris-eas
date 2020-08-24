@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EasApi = void 0;
 var got_1 = __importDefault(require("got"));
-var ArchivesModule_1 = require("./modules/ArchivesModule");
+var ArchiveModule_1 = require("./modules/ArchiveModule");
 var AttachmentModule_1 = require("./modules/AttachmentModule");
-var PoliciesModule_1 = require("./modules/PoliciesModule");
+var PolicyModule_1 = require("./modules/PolicyModule");
 var RecordModule_1 = require("./modules/RecordModule");
 var StoreModule_1 = require("./modules/StoreModule");
 var EasApi = /** @class */ (function () {
@@ -25,32 +25,53 @@ var EasApi = /** @class */ (function () {
             responseType: 'json',
             resolveBodyOnly: true
         });
-        this.archivesModule = new ArchivesModule_1.ArchivesModule(this);
+        this.archiveModule = new ArchiveModule_1.ArchiveModule(this);
         this.attachmentModule = new AttachmentModule_1.AttachmentModule(this);
-        this.policiesModule = new PoliciesModule_1.PoliciesModule(this);
+        this.policyModule = new PolicyModule_1.PolicyModule(this);
         this.recordModule = new RecordModule_1.RecordModule(this);
         this.storeModule = new StoreModule_1.StoreModule(this);
     }
     // Get API clients
+    /**
+     * Gets the regular API client.
+     */
     EasApi.prototype.getApiClient = function () {
         return this.apiClient;
     };
+    /**
+     * Gets the API client that resolves JSON
+     */
     EasApi.prototype.getApiJsonClient = function () {
         return this.apiJsonClient;
     };
     // Get API modules
+    /**
+     * Gets the module to handle archives.
+     */
     EasApi.prototype.archives = function () {
-        return this.archivesModule;
+        return this.archiveModule;
     };
+    /**
+     * Gets the module to handle attachments.
+     */
     EasApi.prototype.attachments = function () {
         return this.attachmentModule;
     };
+    /**
+     * Gets the module to handle policies.
+     */
     EasApi.prototype.policies = function () {
-        return this.policiesModule;
+        return this.policyModule;
     };
+    /**
+     * Gets the module to handle records.
+     */
     EasApi.prototype.records = function () {
         return this.recordModule;
     };
+    /**
+     * Gets the module to handle stores.
+     */
     EasApi.prototype.stores = function () {
         return this.storeModule;
     };
