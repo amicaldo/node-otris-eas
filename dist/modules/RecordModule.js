@@ -91,7 +91,8 @@ var RecordModule = /** @class */ (function () {
      */
     RecordModule.prototype.deleteRecordsExpiredMin = function (store) {
         return this.apiStore.getApiJsonClient()
-            .delete("eas/archives/" + store.name + "/retention/expired-min");
+            .delete("eas/archives/" + store.name + "/retention/expired-min")
+            .then(function (res) { return res.list; });
     };
     /**
      * Gets all records in a store whose maximum retention period has expired.
@@ -112,7 +113,8 @@ var RecordModule = /** @class */ (function () {
      */
     RecordModule.prototype.deleteRecordsExpiredMax = function (store) {
         return this.apiStore.getApiJsonClient()
-            .get("eas/archives/" + store.name + "/retention/expired-max");
+            .get("eas/archives/" + store.name + "/retention/expired-max")
+            .then(function (res) { return res.list; });
     };
     /**
      * Creates (archives) a record in a store.
@@ -264,7 +266,9 @@ var RecordModule = /** @class */ (function () {
      */
     RecordModule.prototype.setProtectedFlag = function (store, recordId) {
         return this.apiStore.getApiClient()
-            .put("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect");
+            .put("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect")
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Removes the "protected" flag of a record.
@@ -275,7 +279,9 @@ var RecordModule = /** @class */ (function () {
      */
     RecordModule.prototype.removeProtectedFlag = function (store, recordId) {
         return this.apiStore.getApiClient()
-            .delete("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect");
+            .delete("eas/archives/" + store.name + "/record/" + recordId + "/flags/protect")
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Generates FormData to create or update a record.

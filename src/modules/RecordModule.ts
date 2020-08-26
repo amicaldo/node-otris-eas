@@ -1,5 +1,6 @@
 import { EasApi } from '../EasApi';
 import {
+  DeleteFlagParams,
   Record,
   RecordCreate,
   RecordFlags,
@@ -87,9 +88,10 @@ export class RecordModule {
    * @param store - Store to remove the records from
    * @returns Empty
    */
-  public deleteRecordsExpiredMin(store: Store): Promise<any> {
+  public deleteRecordsExpiredMin(store: Store): Promise<Record[]> {
     return this.apiStore.getApiJsonClient()
-      .delete(`eas/archives/${store.name}/retention/expired-min`);
+      .delete(`eas/archives/${store.name}/retention/expired-min`)
+      .then((res: any) => res.list);
   }
 
   /**
@@ -110,9 +112,10 @@ export class RecordModule {
    * @param store - Store to remove the records from
    * @returns Empty
    */
-  public deleteRecordsExpiredMax(store: Store): Promise<any> {
+  public deleteRecordsExpiredMax(store: Store): Promise<Record[]> {
     return this.apiStore.getApiJsonClient()
-      .get(`eas/archives/${store.name}/retention/expired-max`);
+      .get(`eas/archives/${store.name}/retention/expired-max`)
+      .then((res: any) => res.list);
   }
 
   /**
@@ -174,7 +177,7 @@ export class RecordModule {
    * @param recordId - Record to delete
    * @returns Empty
    */
-  public delete(store: Store, recordId: string): Promise<any> {
+  public delete(store: Store, recordId: string): Promise<unknown> {
     return this.apiStore.getApiJsonClient()
       .delete(`eas/archives/${store.name}/record/${recordId}`);
   }
@@ -280,9 +283,11 @@ export class RecordModule {
    * @param recordId - ID of the record to set the flag on
    * @returns Empty
    */
-  public setProtectedFlag(store: Store, recordId: string): Promise<any> {
+  public setProtectedFlag(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .put(`eas/archives/${store.name}/record/${recordId}/flags/protect`);
+      .put(`eas/archives/${store.name}/record/${recordId}/flags/protect`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
@@ -292,9 +297,11 @@ export class RecordModule {
    * @param recordId - ID of the record to remove the flag of
    * @returns Empty
    */
-  public removeProtectedFlag(store: Store, recordId: string): Promise<any> {
+  public removeProtectedFlag(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .delete(`eas/archives/${store.name}/record/${recordId}/flags/protect`);
+      .delete(`eas/archives/${store.name}/record/${recordId}/flags/protect`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
