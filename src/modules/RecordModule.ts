@@ -305,6 +305,35 @@ export class RecordModule {
   }
 
   /**
+   * Sets a "delete" flag on a record.
+   *
+   * @param store - Store containing the record
+   * @param recordId - ID of the record to set the flag on
+   * @param parameters - Parameters for the flag
+   * @returns Empty
+   */
+  public setDeleteFlag(store: Store, recordId: string, parameters: DeleteFlagParams): Promise<boolean> {
+    return this.apiStore.getApiJsonClient()
+      .put(`eas/archives/${store.name}/record/${recordId}/flags/delete?${URLParams.getParamsString(parameters)}`)
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  /**
+   * Removes the "delete" flag of a record.
+   *
+   * @param store - Store containing the record
+   * @param recordId - ID of the record to remove the flag of
+   * @returns Empty
+   */
+  public removeDeleteFlag(store: Store, recordId: string): Promise<boolean> {
+    return this.apiStore.getApiJsonClient()
+      .delete(`eas/archives/${store.name}/record/${recordId}/flags/delete`)
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  /**
    * Generates FormData to create or update a record.
    *
    * @param record - Object of the record to create (optional)

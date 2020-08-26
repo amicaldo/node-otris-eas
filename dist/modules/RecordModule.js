@@ -284,6 +284,33 @@ var RecordModule = /** @class */ (function () {
             .catch(function () { return false; });
     };
     /**
+     * Sets a "delete" flag on a record.
+     *
+     * @param store - Store containing the record
+     * @param recordId - ID of the record to set the flag on
+     * @param parameters - Parameters for the flag
+     * @returns Empty
+     */
+    RecordModule.prototype.setDeleteFlag = function (store, recordId, parameters) {
+        return this.apiStore.getApiJsonClient()
+            .put("eas/archives/" + store.name + "/record/" + recordId + "/flags/delete?" + URLParams_1.URLParams.getParamsString(parameters))
+            .then(function () { return true; })
+            .catch(function () { return false; });
+    };
+    /**
+     * Removes the "delete" flag of a record.
+     *
+     * @param store - Store containing the record
+     * @param recordId - ID of the record to remove the flag of
+     * @returns Empty
+     */
+    RecordModule.prototype.removeDeleteFlag = function (store, recordId) {
+        return this.apiStore.getApiJsonClient()
+            .delete("eas/archives/" + store.name + "/record/" + recordId + "/flags/delete")
+            .then(function () { return true; })
+            .catch(function () { return false; });
+    };
+    /**
      * Generates FormData to create or update a record.
      *
      * @param record - Object of the record to create (optional)
