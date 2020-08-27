@@ -217,3 +217,8 @@ export interface AccessControlPolicy {
   id: string;
   rules: AccessControlPolicyRule[];
 }
+
+export interface Annotation {
+  type: string;
+  value: string;
+}

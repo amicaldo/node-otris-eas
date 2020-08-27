@@ -4,6 +4,7 @@ import { AttachmentModule } from './modules/AttachmentModule';
 import { PolicyModule } from './modules/PolicyModule';
 import { RecordModule } from './modules/RecordModule';
 import { StoreModule } from './modules/StoreModule';
+import { AnnotationModule } from './modules/AnnotationModule';
 
 export class EasApi {
 
@@ -12,6 +13,7 @@ export class EasApi {
   private readonly apiJsonClient: Got;
 
   // API modules
+  private readonly annotationModule: AnnotationModule;
   private readonly archiveModule: ArchiveModule;
   private readonly attachmentModule: AttachmentModule;
   private readonly policyModule: PolicyModule;
@@ -35,6 +37,7 @@ export class EasApi {
       resolveBodyOnly: true
     });
 
+    this.annotationModule = new AnnotationModule(this);
     this.archiveModule = new ArchiveModule(this);
     this.attachmentModule = new AttachmentModule(this);
     this.policyModule = new PolicyModule(this);
@@ -59,6 +62,13 @@ export class EasApi {
   }
 
   // Get API modules
+
+  /**
+   * Gets the module to handle annotations.
+   */
+  public annotations(): AnnotationModule {
+    return this.annotationModule;
+  }
 
   /**
    * Gets the module to handle archives.

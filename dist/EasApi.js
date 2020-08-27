@@ -10,6 +10,7 @@ var AttachmentModule_1 = require("./modules/AttachmentModule");
 var PolicyModule_1 = require("./modules/PolicyModule");
 var RecordModule_1 = require("./modules/RecordModule");
 var StoreModule_1 = require("./modules/StoreModule");
+var AnnotationModule_1 = require("./modules/AnnotationModule");
 var EasApi = /** @class */ (function () {
     function EasApi(base, username, password) {
         var token = Buffer.from(username + ":" + password).toString('base64');
@@ -25,6 +26,7 @@ var EasApi = /** @class */ (function () {
             responseType: 'json',
             resolveBodyOnly: true
         });
+        this.annotationModule = new AnnotationModule_1.AnnotationModule(this);
         this.archiveModule = new ArchiveModule_1.ArchiveModule(this);
         this.attachmentModule = new AttachmentModule_1.AttachmentModule(this);
         this.policyModule = new PolicyModule_1.PolicyModule(this);
@@ -45,6 +47,12 @@ var EasApi = /** @class */ (function () {
         return this.apiJsonClient;
     };
     // Get API modules
+    /**
+     * Gets the module to handle annotations.
+     */
+    EasApi.prototype.annotations = function () {
+        return this.annotationModule;
+    };
     /**
      * Gets the module to handle archives.
      */
