@@ -66,11 +66,13 @@ export class PolicyModule {
    *
    * @param store - Store to remove the policy from
    * @param policyId - ID of the policy to remove
-   * @returns Empty
+   * @returns Whether the policy was deleted
    */
-  public deleteRetentionPolicy(store: Store, policyId: string): Promise<unknown> {
+  public deleteRetentionPolicy(store: Store, policyId: string): Promise<boolean> {
     return this.apiStore.getApiJsonClient()
-      .delete(`eas/archives/${store.name}/retentionpolicy/${policyId}`);
+      .delete(`eas/archives/${store.name}/retentionpolicy/${policyId}`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
@@ -128,11 +130,13 @@ export class PolicyModule {
    *
    * @param store - The store to remove the policy from
    * @param policyId - The ID of the policy to remove
-   * @returns Empty
+   * @returns Whether the policy was deleted
    */
-  public deleteAccessControlPolicy(store: Store, policyId: string): Promise<unknown> {
+  public deleteAccessControlPolicy(store: Store, policyId: string): Promise<boolean> {
     return this.apiStore.getApiJsonClient()
-      .delete(`eas/archives/${store.name}/accesscontrolpolicy/${policyId}`);
+      .delete(`eas/archives/${store.name}/accesscontrolpolicy/${policyId}`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**

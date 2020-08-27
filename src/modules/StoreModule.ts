@@ -33,46 +33,54 @@ export class StoreModule {
    *
    * @param storeName - Name of the new store
    * @param iniData - Configuration of the new store as INI
-   * @returns Empty
+   * @returns Whether the store was created
    */
-  public create(storeName: string, iniData: string): Promise<any> {
+  public create(storeName: string, iniData: string): Promise<boolean> {
     return this.apiStore.getApiClient()
       .put(`eas/archives/${storeName}`, {
         body: iniData
-      });
+      })
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
    * Deletes a store.
    *
    * @param store - Store to be deleted
-   * @returns Empty
+   * @returns Whether the store was deleted
    */
-  public delete(store: Store): Promise<any> {
+  public delete(store: Store): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .delete(`eas/archives/${store.name}`);
+      .delete(`eas/archives/${store.name}`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
    * Activates a store.
    *
    * @param store - Store to activate
-   * @returns Empty
+   * @returns Whether the store was activated
    */
-  public activate(store: Store): Promise<any> {
+  public activate(store: Store): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .put(`eas/archives/${store.name}/active`);
+      .put(`eas/archives/${store.name}/active`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
    * Deactivates a store.
    *
    * @param store - Store to deactivate
-   * @returns Empty
+   * @returns Whether the store was deactivated
    */
-  public deactivate(store: Store): Promise<any> {
+  public deactivate(store: Store): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .delete(`eas/archives/${store.name}/active`);
+      .delete(`eas/archives/${store.name}/active`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
@@ -92,11 +100,13 @@ export class StoreModule {
    *
    * @param store - The store to update the configuration of
    * @param iniData - The updated configuration of the store as INI
-   * @returns Empty
+   * @returns Whether the configuration was updated
    */
-  public updateConfiguration(store: Store, iniData: string): Promise<any> {
+  public updateConfiguration(store: Store, iniData: string): Promise<boolean> {
     return this.apiStore.getApiClient()
-      .put(`eas/archives/${store.name}/configuration`);
+      .put(`eas/archives/${store.name}/configuration`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**

@@ -81,11 +81,13 @@ var PolicyModule = /** @class */ (function () {
      *
      * @param store - Store to remove the policy from
      * @param policyId - ID of the policy to remove
-     * @returns Empty
+     * @returns Whether the policy was deleted
      */
     PolicyModule.prototype.deleteRetentionPolicy = function (store, policyId) {
         return this.apiStore.getApiJsonClient()
-            .delete("eas/archives/" + store.name + "/retentionpolicy/" + policyId);
+            .delete("eas/archives/" + store.name + "/retentionpolicy/" + policyId)
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Requests an access control policy.
@@ -137,11 +139,13 @@ var PolicyModule = /** @class */ (function () {
      *
      * @param store - The store to remove the policy from
      * @param policyId - The ID of the policy to remove
-     * @returns Empty
+     * @returns Whether the policy was deleted
      */
     PolicyModule.prototype.deleteAccessControlPolicy = function (store, policyId) {
         return this.apiStore.getApiJsonClient()
-            .delete("eas/archives/" + store.name + "/accesscontrolpolicy/" + policyId);
+            .delete("eas/archives/" + store.name + "/accesscontrolpolicy/" + policyId)
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Generates FormData to create or update a retention policy.

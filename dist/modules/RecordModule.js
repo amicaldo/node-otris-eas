@@ -164,11 +164,13 @@ var RecordModule = /** @class */ (function () {
      *
      * @param store - Store which contains the record
      * @param recordId - Record to delete
-     * @returns Empty
+     * @returns Whether the record was deleted
      */
     RecordModule.prototype.delete = function (store, recordId) {
         return this.apiStore.getApiJsonClient()
-            .delete("eas/archives/" + store.name + "/record/" + recordId);
+            .delete("eas/archives/" + store.name + "/record/" + recordId)
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Searches for records in a store using a query.
@@ -262,7 +264,7 @@ var RecordModule = /** @class */ (function () {
      *
      * @param store - Store containing the record
      * @param recordId - ID of the record to set the flag on
-     * @returns Empty
+     * @returns Whether the flag was set
      */
     RecordModule.prototype.setProtectedFlag = function (store, recordId) {
         return this.apiStore.getApiClient()
@@ -275,7 +277,7 @@ var RecordModule = /** @class */ (function () {
      *
      * @param store - Store containing the record
      * @param recordId - ID of the record to remove the flag of
-     * @returns Empty
+     * @returns Whether the flag was removed
      */
     RecordModule.prototype.removeProtectedFlag = function (store, recordId) {
         return this.apiStore.getApiClient()
@@ -289,7 +291,7 @@ var RecordModule = /** @class */ (function () {
      * @param store - Store containing the record
      * @param recordId - ID of the record to set the flag on
      * @param parameters - Parameters for the flag
-     * @returns Empty
+     * @returns Whether the flag was set
      */
     RecordModule.prototype.setDeleteFlag = function (store, recordId, parameters) {
         return this.apiStore.getApiJsonClient()
@@ -302,7 +304,7 @@ var RecordModule = /** @class */ (function () {
      *
      * @param store - Store containing the record
      * @param recordId - ID of the record to remove the flag of
-     * @returns Empty
+     * @returns Whether the flag was removed
      */
     RecordModule.prototype.removeDeleteFlag = function (store, recordId) {
         return this.apiStore.getApiJsonClient()

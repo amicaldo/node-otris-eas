@@ -175,11 +175,13 @@ export class RecordModule {
    *
    * @param store - Store which contains the record
    * @param recordId - Record to delete
-   * @returns Empty
+   * @returns Whether the record was deleted
    */
-  public delete(store: Store, recordId: string): Promise<unknown> {
+  public delete(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiJsonClient()
-      .delete(`eas/archives/${store.name}/record/${recordId}`);
+      .delete(`eas/archives/${store.name}/record/${recordId}`)
+      .then(() => true)
+      .catch(() => false);
   }
 
   /**
@@ -281,7 +283,7 @@ export class RecordModule {
    *
    * @param store - Store containing the record
    * @param recordId - ID of the record to set the flag on
-   * @returns Empty
+   * @returns Whether the flag was set
    */
   public setProtectedFlag(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiClient()
@@ -295,7 +297,7 @@ export class RecordModule {
    *
    * @param store - Store containing the record
    * @param recordId - ID of the record to remove the flag of
-   * @returns Empty
+   * @returns Whether the flag was removed
    */
   public removeProtectedFlag(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiClient()
@@ -310,7 +312,7 @@ export class RecordModule {
    * @param store - Store containing the record
    * @param recordId - ID of the record to set the flag on
    * @param parameters - Parameters for the flag
-   * @returns Empty
+   * @returns Whether the flag was set
    */
   public setDeleteFlag(store: Store, recordId: string, parameters: DeleteFlagParams): Promise<boolean> {
     return this.apiStore.getApiJsonClient()
@@ -324,7 +326,7 @@ export class RecordModule {
    *
    * @param store - Store containing the record
    * @param recordId - ID of the record to remove the flag of
-   * @returns Empty
+   * @returns Whether the flag was removed
    */
   public removeDeleteFlag(store: Store, recordId: string): Promise<boolean> {
     return this.apiStore.getApiJsonClient()

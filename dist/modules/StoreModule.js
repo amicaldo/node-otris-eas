@@ -30,43 +30,51 @@ var StoreModule = /** @class */ (function () {
      *
      * @param storeName - Name of the new store
      * @param iniData - Configuration of the new store as INI
-     * @returns Empty
+     * @returns Whether the store was created
      */
     StoreModule.prototype.create = function (storeName, iniData) {
         return this.apiStore.getApiClient()
             .put("eas/archives/" + storeName, {
             body: iniData
-        });
+        })
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Deletes a store.
      *
      * @param store - Store to be deleted
-     * @returns Empty
+     * @returns Whether the store was deleted
      */
     StoreModule.prototype.delete = function (store) {
         return this.apiStore.getApiClient()
-            .delete("eas/archives/" + store.name);
+            .delete("eas/archives/" + store.name)
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Activates a store.
      *
      * @param store - Store to activate
-     * @returns Empty
+     * @returns Whether the store was activated
      */
     StoreModule.prototype.activate = function (store) {
         return this.apiStore.getApiClient()
-            .put("eas/archives/" + store.name + "/active");
+            .put("eas/archives/" + store.name + "/active")
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Deactivates a store.
      *
      * @param store - Store to deactivate
-     * @returns Empty
+     * @returns Whether the store was deactivated
      */
     StoreModule.prototype.deactivate = function (store) {
         return this.apiStore.getApiClient()
-            .delete("eas/archives/" + store.name + "/active");
+            .delete("eas/archives/" + store.name + "/active")
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Requests a stores configuration.
@@ -84,11 +92,13 @@ var StoreModule = /** @class */ (function () {
      *
      * @param store - The store to update the configuration of
      * @param iniData - The updated configuration of the store as INI
-     * @returns Empty
+     * @returns Whether the configuration was updated
      */
     StoreModule.prototype.updateConfiguration = function (store, iniData) {
         return this.apiStore.getApiClient()
-            .put("eas/archives/" + store.name + "/configuration");
+            .put("eas/archives/" + store.name + "/configuration")
+            .then(function () { return true; })
+            .catch(function () { return false; });
     };
     /**
      * Spools a file to later attach it to a record.
