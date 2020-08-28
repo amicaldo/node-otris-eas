@@ -21,7 +21,7 @@ export class ArchiveModule {
    *
    * @returns Status information
    */
-  public getStatus(): Promise<any> {
+  public getStatus(): Promise<unknown> {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/status`);
   }
@@ -31,7 +31,7 @@ export class ArchiveModule {
    *
    * @returns Version information
    */
-  public getVersion(): Promise<any> {
+  public getVersion(): Promise<unknown> {
     return this.apiStore.getApiJsonClient()
       .get(`eas/archives/version`);
   }
