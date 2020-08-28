@@ -1,5 +1,5 @@
 import { EasApi } from '../EasApi';
-import { RetentionList, Spool, Store, StoreConfiguration, StoreTermListQuery } from '../models/models';
+import { RetentionList, Spool, Store, StoreConfiguration, Term, TermListQuery } from '../models/models';
 import { URLParams } from '../helpers/URLParams';
 import { ReadStream } from 'fs';
 import FormData from 'form-data';
@@ -154,9 +154,10 @@ export class StoreModule {
    * @param query - Data to query
    * @returns List of queried terms
    */
-  public getTermList(store: Store, query: StoreTermListQuery): Promise<any> {
+  public getTermList(store: Store, query: TermListQuery): Promise<Term[]> {
     return this.apiStore.getApiJsonClient()
-      .get(`eas/archives/${store.name}/termlist?${URLParams.getParamsString(query)}`);
+      .get(`eas/archives/${store.name}/termlist?${URLParams.getParamsString(query)}`)
+      .then((res: any) => res.termList);
   }
 
 }

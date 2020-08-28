@@ -140,7 +140,8 @@ var StoreModule = /** @class */ (function () {
      */
     StoreModule.prototype.getTermList = function (store, query) {
         return this.apiStore.getApiJsonClient()
-            .get("eas/archives/" + store.name + "/termlist?" + URLParams_1.URLParams.getParamsString(query));
+            .get("eas/archives/" + store.name + "/termlist?" + URLParams_1.URLParams.getParamsString(query))
+            .then(function (res) { return res.termList; });
     };
     return StoreModule;
 }());

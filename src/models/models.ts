@@ -18,7 +18,7 @@ export interface Spool {
   path: string;
 }
 
-export interface StoreTermListQuery {
+export interface TermListQuery {
   /**
    * Name of the field from the index whose terms are to be queried.
    * Default value is `_body`.
@@ -39,6 +39,11 @@ export interface StoreTermListQuery {
    * Default value is `0`.
    */
   freqThreshold: number;
+}
+
+export interface Term {
+  term: string;
+  frequency: number;
 }
 
 export interface Attachment {
