@@ -27,6 +27,9 @@ var xmlbuilder2 = __importStar(require("xmlbuilder2"));
 var form_data_1 = __importDefault(require("form-data"));
 var tmp_1 = __importDefault(require("tmp"));
 var fs_1 = __importDefault(require("fs"));
+/**
+ * Module to handle archive policies
+ */
 var PolicyModule = /** @class */ (function () {
     function PolicyModule(apiClient) {
         this.apiStore = apiClient;

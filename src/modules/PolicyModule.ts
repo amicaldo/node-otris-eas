@@ -5,6 +5,9 @@ import FormData from 'form-data';
 import tmp, { FileResult } from 'tmp';
 import fs from 'fs';
 
+/**
+ * Module to handle archive policies
+ */
 export class PolicyModule {
 
   private readonly apiStore: EasApi;

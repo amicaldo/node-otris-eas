@@ -21,6 +21,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnnotationModule = void 0;
 var xmlbuilder2 = __importStar(require("xmlbuilder2"));
+/**
+ * Module to handle annotations on records
+ */
 var AnnotationModule = /** @class */ (function () {
     function AnnotationModule(apiClient) {
         this.apiStore = apiClient;

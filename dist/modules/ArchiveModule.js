@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArchiveModule = void 0;
+/**
+ * Module to handle archive status and version queries
+ */
 var ArchiveModule = /** @class */ (function () {
     function ArchiveModule(apiClient) {
         this.apiStore = apiClient;

@@ -2,6 +2,9 @@ import { EasApi } from '../EasApi';
 import { Annotation, Store } from '../models/models';
 import * as xmlbuilder2 from 'xmlbuilder2';
 
+/**
+ * Module to handle annotations on records
+ */
 export class AnnotationModule {
 
   private readonly apiStore: EasApi;

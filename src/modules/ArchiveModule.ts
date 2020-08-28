@@ -1,5 +1,8 @@
 import { EasApi } from '../EasApi';
 
+/**
+ * Module to handle archive status and version queries
+ */
 export class ArchiveModule {
 
   private readonly apiStore: EasApi;
