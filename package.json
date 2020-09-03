@@ -2,7 +2,7 @@
   "name": "node-eas",
   "version": "0.0.1",
   "description": "Abstraction for the otris EAS",
-  "main": "./dist/eas.js",
+  "main": "./dist/EasApi.js",
   "directories": {
     "src": "src",
     "dist": "dist"
