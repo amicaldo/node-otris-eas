@@ -57,7 +57,7 @@ var RecordModule = /** @class */ (function () {
      */
     RecordModule.prototype.getAll = function (store) {
         return this.search(store, {
-            query: 'record',
+            query: '*',
             itemsPerPage: Math.pow(2, 32) / 2 - 1 // Max int value
         });
     };

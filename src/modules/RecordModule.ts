@@ -53,7 +53,7 @@ export class RecordModule {
    */
   public getAll(store: Store): Promise<Record[]> {
     return this.search(store, {
-      query: 'record',
+      query: '*',
       itemsPerPage: Math.pow(2, 32) / 2 - 1 // Max int value
     });
   }
