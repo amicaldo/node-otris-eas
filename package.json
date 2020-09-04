@@ -2,6 +2,7 @@
   "name": "node-eas",
   "version": "0.0.1",
   "description": "Abstraction for the otris EAS",
+  "author": "amicaldo GmbH <admin@amicaldo.de>",
   "main": "./dist/EasApi.js",
   "directories": {
     "src": "src",
@@ -11,20 +12,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "amicaldo GmbH <admin@amicaldo.de>",
   "license": "",
-  "dependencies": {
-    "@types/tmp": "^0.2.0",
-    "form-data": "^3.0.0",
-    "got": "^11.5.2",
-    "tmp": "^0.2.1",
-    "xmlbuilder2": "^2.3.1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/amicaldo/node-eas.git"
   },
+  "dependencies": {
+    "@types/tmp": "^0.2.0",
+    "form-data": "^3.0.0",
+    "got": "^11.6.0",
+    "tmp": "^0.2.1",
+    "xmlbuilder2": "^2.3.1"
+  },
   "devDependencies": {
-    "@types/node": "^14.0.27"
+    "@types/node": "^14.6.4"
   }
 }
