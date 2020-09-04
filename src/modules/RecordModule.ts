@@ -378,6 +378,10 @@ export class RecordModule {
       xmlRecord.ele('title').txt(record.title);
     }
 
+    if (record.type) {
+      xmlRecord.ele('type').txt(record.type);
+    }
+
     if (record.attachments) {
       for (const attachment of record.attachments) {
         xmlRecord
@@ -385,6 +389,14 @@ export class RecordModule {
           .ele('name').txt(attachment.name)
           .up()
           .ele('path').txt(attachment.path);
+      }
+    }
+
+    if (record.fields) {
+      for (const field of record.fields) {
+        xmlRecord
+          .ele('field', { name: field.name })
+          .txt(field.value);
       }
     }
 

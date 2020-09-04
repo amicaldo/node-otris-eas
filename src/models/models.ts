@@ -57,6 +57,11 @@ export interface Link {
   href: string;
 }
 
+export interface Field {
+  name: string;
+  value: string;
+}
+
 export interface RecordFragment {
   id: string;
   link: Link;
@@ -74,8 +79,10 @@ export interface RecordVerification {
 }
 
 export interface RecordCreate {
-  attachments?: Attachment[];
   title?: string;
+  type?: string;
+  attachments?: Attachment[];
+  fields?: Field[];
 }
 
 export interface Record {

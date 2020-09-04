@@ -347,6 +347,9 @@ var RecordModule = /** @class */ (function () {
         if (record.title) {
             xmlRecord.ele('title').txt(record.title);
         }
+        if (record.type) {
+            xmlRecord.ele('type').txt(record.type);
+        }
         if (record.attachments) {
             for (var _i = 0, _a = record.attachments; _i < _a.length; _i++) {
                 var attachment = _a[_i];
@@ -355,6 +358,14 @@ var RecordModule = /** @class */ (function () {
                     .ele('name').txt(attachment.name)
                     .up()
                     .ele('path').txt(attachment.path);
+            }
+        }
+        if (record.fields) {
+            for (var _b = 0, _c = record.fields; _b < _c.length; _b++) {
+                var field = _c[_b];
+                xmlRecord
+                    .ele('field', { name: field.name })
+                    .txt(field.value);
             }
         }
         return xmlRecord.end({ prettyPrint: true });
