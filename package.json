@@ -1,5 +1,5 @@
 {
-  "name": "node-eas",
+  "name": "node-otris-eas",
   "version": "0.0.1",
   "description": "Abstraction for the otris EAS",
   "author": "amicaldo GmbH <admin@amicaldo.de>",
@@ -12,10 +12,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "license": "",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/amicaldo/node-eas.git"
+    "url": "git+https://github.com/amicaldo/node-otris-eas.git"
   },
   "dependencies": {
     "@types/tmp": "^0.2.0",
@@ -26,5 +26,9 @@
   },
   "devDependencies": {
     "@types/node": "^14.6.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/amicaldo/node-otris-eas/issues"
+  },
+  "homepage": "https://github.com/amicaldo/node-otris-eas#readme"
 }
